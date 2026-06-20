@@ -20,7 +20,7 @@ describe('EventoApiService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('crear envia un POST a /eventos con el cuerpo de la peticion', () => {
+  it('crear envia un POST a /eventos/crearEvento con el cuerpo de la peticion', () => {
     const request: CrearEventoRequest = {
       titulo: 'Conferencia',
       descripcion: 'Descripcion de prueba',
@@ -34,17 +34,17 @@ describe('EventoApiService', () => {
 
     service.crear(request).subscribe();
 
-    const req = httpMock.expectOne('/eventos');
+    const req = httpMock.expectOne('/eventos/crearEvento');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(request);
     req.flush({});
   });
 
-  it('listar envia un GET a /eventos solo con los filtros provistos', () => {
+  it('listar envia un GET a /eventos/listarEventos solo con los filtros provistos', () => {
     service.listar({ tipo: TipoEvento.Taller, estado: EstadoEventoActual.Activo }).subscribe();
 
     const req = httpMock.expectOne(
-      (r) => r.url === '/eventos' && r.params.get('Tipo') === TipoEvento.Taller && r.params.get('Estado') === EstadoEventoActual.Activo,
+      (r) => r.url === '/eventos/listarEventos' && r.params.get('Tipo') === TipoEvento.Taller && r.params.get('Estado') === EstadoEventoActual.Activo,
     );
     expect(req.request.method).toBe('GET');
     expect(req.request.params.has('Titulo')).toBe(false);
@@ -53,10 +53,10 @@ describe('EventoApiService', () => {
     req.flush([]);
   });
 
-  it('listar sin filtros no agrega parametros', () => {
+  it('listarEventos sin filtros no agrega parametros', () => {
     service.listar({}).subscribe();
 
-    const req = httpMock.expectOne('/eventos');
+    const req = httpMock.expectOne('/eventos/listarEventos');
     expect(req.request.params.keys().length).toBe(0);
     req.flush([]);
   });
@@ -64,7 +64,7 @@ describe('EventoApiService', () => {
   it('obtenerReporteOcupacion envia un GET al endpoint de reporte del evento', () => {
     service.obtenerReporteOcupacion('evt-1').subscribe();
 
-    const req = httpMock.expectOne('/eventos/evt-1/reporte-ocupacion');
+    const req = httpMock.expectOne('/eventos/reporte-ocupacion/evt-1');
     expect(req.request.method).toBe('GET');
     req.flush({});
   });

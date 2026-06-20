@@ -31,14 +31,6 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/eventos/pages/evento-reporte/evento-reporte.page').then((m) => m.EventoReportePage),
       },
-      {
-        path: 'reportes',
-        canActivate: [authGuard],
-        loadComponent: () =>
-          import('./features/eventos/pages/eventos-reportes/eventos-reportes.page').then(
-            (m) => m.EventosReportesPage,
-          ),
-      },
     ],
   },
   {

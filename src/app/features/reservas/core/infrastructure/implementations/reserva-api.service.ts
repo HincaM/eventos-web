@@ -21,7 +21,7 @@ export class ReservaApiService extends ReservaService {
     if (filtro.estado) params = params.set('Estado', filtro.estado);
     if (filtro.nombreComprador) params = params.set('NombreComprador', filtro.nombreComprador);
 
-    return this.http.get<Reserva[]>(`${this.group}/listar`, { params });
+    return this.http.get<Reserva[]>(`${this.group}/listarReservas`, { params });
   }
 
   confirmarPago(reservaId: string): Observable<Reserva> {

@@ -17,10 +17,10 @@ describe('VenueApiService', () => {
 
   afterEach(() => httpMock.verify());
 
-  it('listar envia un GET a /venues', () => {
+  it('listar envia un GET a /venues/listarVenues', () => {
     service.listar().subscribe();
 
-    const req = httpMock.expectOne('/venues');
+    const req = httpMock.expectOne('/venues/listarVenues');
     expect(req.request.method).toBe('GET');
     req.flush([]);
   });

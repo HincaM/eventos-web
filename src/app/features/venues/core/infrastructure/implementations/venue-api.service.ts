@@ -10,6 +10,6 @@ export class VenueApiService extends VenueService {
   private readonly group = '/venues';
 
   listar(): Observable<Venue[]> {
-    return this.http.get<Venue[]>(`${this.group}/listar`);
+    return this.http.get<Venue[]>(`${this.group}/listarVenues`);
   }
 }
