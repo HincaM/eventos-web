@@ -7,9 +7,9 @@ import { VenueService } from '../../domain/servicios/venue.service';
 @Injectable()
 export class VenueApiService extends VenueService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/venues';
+  private readonly group = '/venues';
 
   listar(): Observable<Venue[]> {
-    return this.http.get<Venue[]>(this.baseUrl);
+    return this.http.get<Venue[]>(`${this.group}/listar`);
   }
 }

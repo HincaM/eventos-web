@@ -31,6 +31,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/eventos/pages/evento-reporte/evento-reporte.page').then((m) => m.EventoReportePage),
       },
+      {
+        path: 'reportes',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/eventos/pages/eventos-reportes/eventos-reportes.page').then(
+            (m) => m.EventosReportesPage,
+          ),
+      },
     ],
   },
   {
@@ -43,6 +51,12 @@ export const routes: Routes = [
           import('./features/reservas/pages/reservar-entrada/reservar-entrada.page').then(
             (m) => m.ReservarEntradaPage,
           ),
+      },
+      {
+        path: '',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/reservas/pages/reservas-list/reservas-list.page').then((m) => m.ReservasListPage),
       },
     ],
   },

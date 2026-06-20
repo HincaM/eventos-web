@@ -16,12 +16,15 @@
   <div class="row">
     <div class="col-md-6 mb-3">
       <label class="form-label" for="venueId">Venue</label>
-      <select id="venueId" class="form-select" [formField]="form.venueId">
-        <option value="0">Selecciona un venue</option>
-        @for (venue of venues(); track venue.id) {
-          <option [value]="venue.id.toString()">{{ venue.nombre }}</option>
-        }
-      </select>
+      <ui-select
+        id="venueId"
+        [items]="venues()"
+        [codigoFn]="venueCodigo"
+        [descripcionFn]="venueDescripcion"
+        placeholder="Selecciona un venue"
+        [formField]="form.venueId"
+        (selected)="onVenueSeleccionado($event)"
+      />
       <ui-form-error [errors]="form.venueId().errors()" [touched]="form.venueId().touched()" />
     </div>
     <div class="col-md-6 mb-3">
@@ -52,12 +55,14 @@
     </div>
     <div class="col-md-6 mb-3">
       <label class="form-label" for="tipo">Tipo</label>
-      <select id="tipo" class="form-select" [formField]="form.tipo">
-        <option value="">Selecciona un tipo</option>
-        @for (tipo of tiposEvento; track tipo) {
-          <option [value]="tipo">{{ tipo }}</option>
-        }
-      </select>
+      <ui-select
+        id="tipo"
+        [items]="tiposEvento"
+        [codigoFn]="identidad"
+        [descripcionFn]="identidad"
+        placeholder="Selecciona un tipo"
+        [formField]="form.tipo"
+      />
       <ui-form-error [errors]="form.tipo().errors()" [touched]="form.tipo().touched()" />
     </div>
   </div>

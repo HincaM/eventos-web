@@ -1,11 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormField, form, required, min, schema, submit, validate, minLength, maxLength } from '@angular/forms/signals';
+import { FormField, form, required, min, max, schema, submit, validate, minLength, maxLength } from '@angular/forms/signals';
 import { NotificationService } from '../../../../core/services/notification.service';
 import { TipoEvento } from '../../../../core/enums/tipo-evento.enum';
 import { nowAsDatetimeLocalValue, toApiDateTime } from '../../../../core/helpers/datetime.helper';
 import { UiButton } from '../../../../shared/components/button/button';
 import { UiFormError } from '../../../../shared/components/form-error/form-error';
+import { UiSelect } from '../../../../shared/components/select/select';
 import { CrearEventoUseCase } from '../../core/application/use-cases/crear-evento.use-case';
 import { Venue } from '../../../venues/core/domain/models/venue.model';
 import { VenueService } from '../../../venues/core/domain/servicios/venue.service';
@@ -14,6 +15,7 @@ interface CrearEventoFormModel {
   titulo: string;
   descripcion: string;
   venueId: string;
+  capacidadVenue: number;
   capacidadMaxima: number;
   fechaInicio: string;
   fechaFin: string;
@@ -31,9 +33,12 @@ const crearEventoSchema = schema<CrearEventoFormModel>((path) => {
   maxLength(path.descripcion, 500, { message: 'La descripción debe tener maximo 500 caracteres.' });
 
   required(path.tipo, { message: 'Selecciona un tipo de evento.' });
-  validate(path.venueId, ({ value }) => (value() === '0' ? { kind: 'venue-requerido', message: 'Selecciona un venue válido.' } : undefined));
+  validate(path.venueId, ({ value }) => (value() === '' ? { kind: 'venue-requerido', message: 'Selecciona un venue válido.' } : undefined));
 
   min(path.capacidadMaxima, 1, { message: 'La capacidad debe ser mayor a 0.' });
+  max(path.capacidadMaxima, ({ valueOf }) => valueOf(path.capacidadVenue) || undefined, {
+    message: 'Un evento no puede exceder la capacidad del venue asignado.',
+  });
 
   min(path.precio, 0.01, { message: 'El precio debe ser mayor a 0.' });
   required(path.fechaInicio, { message: 'La fecha de inicio es obligatoria.' });
@@ -49,7 +54,7 @@ const crearEventoSchema = schema<CrearEventoFormModel>((path) => {
 
 @Component({
   selector: 'evento-crear-page',
-  imports: [FormField, UiButton, UiFormError],
+  imports: [FormField, UiButton, UiFormError, UiSelect],
   templateUrl: './evento-crear.page.html',
 })
 export class EventoCrearPage {
@@ -59,13 +64,15 @@ export class EventoCrearPage {
   private readonly venueService = inject(VenueService);
 
   protected readonly tiposEvento = Object.values(TipoEvento);
+  protected readonly identidad = (valor: string) => valor;
   protected readonly venues = signal<Venue[]>([]);
   protected readonly creating = signal(false);
 
   protected readonly model = signal<CrearEventoFormModel>({
     titulo: '',
     descripcion: '',
-    venueId: '0',
+    venueId: '',
+    capacidadVenue: 0,
     capacidadMaxima: 1,
     fechaInicio: nowAsDatetimeLocalValue(),
     fechaFin: nowAsDatetimeLocalValue(),
@@ -75,8 +82,15 @@ export class EventoCrearPage {
 
   protected readonly form = form(this.model, crearEventoSchema);
 
+  protected readonly venueCodigo = (venue: Venue) => venue.id.toString();
+  protected readonly venueDescripcion = (venue: Venue) => venue.nombre;
+
   constructor() {
     this.venueService.listar().subscribe((venues) => this.venues.set(venues));
+  }
+
+  protected onVenueSeleccionado(venue: Venue | undefined): void {
+    this.model.update((m) => ({ ...m, capacidadVenue: venue?.capacidad ?? 0 }));
   }
 
   protected onSubmit(event: SubmitEvent): void {

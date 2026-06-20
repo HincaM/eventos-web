@@ -1,15 +1,14 @@
-import { CurrencyPipe } from '@angular/common';
 import { Component, inject, input, signal } from '@angular/core';
 import { switchMap } from 'rxjs';
 import { toObservable } from '@angular/core/rxjs-interop';
-import { UiBadge } from '../../../../shared/components/badge/badge';
 import { UiSpinner } from '../../../../shared/components/spinner/spinner';
 import { ReporteOcupacionEvento } from '../../core/domain/models/evento.model';
 import { ObtenerReporteOcupacionUseCase } from '../../core/application/use-cases/obtener-reporte-ocupacion.use-case';
+import { ReporteOcupacionCard } from './components/reporte-ocupacion-card/reporte-ocupacion-card';
 
 @Component({
   selector: 'evento-reporte-page',
-  imports: [CurrencyPipe, UiBadge, UiSpinner],
+  imports: [ReporteOcupacionCard, UiSpinner],
   templateUrl: './evento-reporte.page.html',
 })
 export class EventoReportePage {

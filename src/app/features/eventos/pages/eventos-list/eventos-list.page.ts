@@ -7,6 +7,7 @@ import { EstadoEventoActual } from '../../../../core/enums/estado-evento.enum';
 import { TipoEvento } from '../../../../core/enums/tipo-evento.enum';
 import { UiButton } from '../../../../shared/components/button/button';
 import { RangoFechas, UiDateRangePicker } from '../../../../shared/components/date-range-picker/date-range-picker';
+import { UiSelect } from '../../../../shared/components/select/select';
 import { UiSpinner } from '../../../../shared/components/spinner/spinner';
 import { EventoCard } from './components/evento-card/evento-card';
 import { Evento } from '../../core/domain/models/evento.model';
@@ -24,7 +25,7 @@ interface FiltroFormModel {
 
 @Component({
   selector: 'eventos-list-page',
-  imports: [RouterLink, FormField, UiButton, UiDateRangePicker, UiSpinner, EventoCard],
+  imports: [RouterLink, FormField, UiButton, UiDateRangePicker, UiSelect, UiSpinner, EventoCard],
   templateUrl: './eventos-list.page.html',
 })
 export class EventosListPage {
@@ -35,6 +36,9 @@ export class EventosListPage {
 
   protected readonly tiposEvento = Object.values(TipoEvento);
   protected readonly estadosEvento = Object.values(EstadoEventoActual);
+  protected readonly identidad = (valor: string) => valor;
+  protected readonly venueCodigo = (venue: Venue) => venue.id.toString();
+  protected readonly venueDescripcion = (venue: Venue) => venue.nombre;
   protected readonly venues = signal<Venue[]>([]);
 
   protected readonly model = signal<FiltroFormModel>({ titulo: '', tipo: '', estado: '', venueId: '' });

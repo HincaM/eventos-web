@@ -1,0 +1,89 @@
+<h1 class="h3 mb-4">Reservas</h1>
+
+<form class="row g-2 align-items-end mb-4" (submit)="onFiltrar($event)" novalidate>
+  <div class="col-md-3">
+    <label class="form-label" for="filtroEstado">Estado</label>
+    <ui-select id="filtroEstado" [items]="estadosReserva" [codigoFn]="identidad" [descripcionFn]="identidad" placeholder="Todos" [formField]="form.estado" />
+  </div>
+  <div class="col-md-3">
+    <label class="form-label" for="filtroEvento">Evento</label>
+    <ui-select id="filtroEvento" [items]="eventos()" [codigoFn]="eventoCodigo" [descripcionFn]="eventoDescripcion" placeholder="Todos" [formField]="form.eventoId" />
+  </div>
+  <div class="col-md-3">
+    <label class="form-label" for="filtroComprador">Comprador</label>
+    <input id="filtroComprador" type="text" class="form-control" [formField]="form.nombreComprador" />
+  </div>
+  <div class="col-md-1">
+    <ui-button type="submit">Filtrar</ui-button>
+  </div>
+</form>
+
+@if (reservas(); as reservas) {
+  @if (reservas.length === 0) {
+    <p class="text-muted">No se encontraron reservas con los filtros seleccionados.</p>
+  } @else {
+    <div class="table-responsive">
+      <table class="table align-middle">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Evento</th>
+            <th>Comprador</th>
+            <th>Cantidad</th>
+            <th>Estado</th>
+            <th>Fecha reserva</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (reserva of reservas; track reserva.id) {
+            <tr>
+              <td>{{ reserva.codigoReserva ?? '—' }}</td>
+              <td>{{ eventoTituloPorId().get(reserva.eventoId) ?? reserva.eventoId }}</td>
+              <td>
+                {{ reserva.nombreComprador }}
+                <div class="text-muted small">{{ reserva.emailComprador }}</div>
+              </td>
+              <td>{{ reserva.cantidad }}</td>
+              <td><ui-badge [estado]="reserva.estado" /></td>
+              <td>{{ reserva.fechaReserva | date: 'short' }}</td>
+              <td>
+                <div class="d-flex gap-2">
+                  <ui-button
+                    variant="secondary"
+                    [disabled]="reserva.estado !== 'PendientePago'"
+                    [loading]="accionando() === reserva.id"
+                    (click)="onConfirmarPago(reserva)"
+                  >
+                    Confirmar
+                  </ui-button>
+                  <ui-button
+                    variant="danger"
+                    [disabled]="reserva.estado === 'Cancelada'"
+                    [loading]="accionando() === reserva.id"
+                    (click)="reservaACancelar.set(reserva)"
+                  >
+                    Cancelar
+                  </ui-button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  }
+} @else {
+  <ui-spinner />
+}
+
+<ui-modal
+  [open]="!!reservaACancelar()"
+  title="Cancelar reserva"
+  confirmLabel="Sí, cancelar"
+  cancelLabel="Volver"
+  (confirmed)="onCancelar()"
+  (cancelled)="reservaACancelar.set(null)"
+>
+  ¿Seguro que deseas cancelar la reserva de {{ reservaACancelar()?.nombreComprador }}?
+</ui-modal>

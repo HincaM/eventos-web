@@ -9,7 +9,7 @@ import { EventoService } from '../../domain/servicios/evento.service';
 @Injectable()
 export class EventoApiService extends EventoService {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/eventos';
+  private readonly group = '/eventos';
 
   listar(filtro: ListarEventosFiltro): Observable<Evento[]> {
     let params = new HttpParams();
@@ -20,14 +20,14 @@ export class EventoApiService extends EventoService {
     if (filtro.fechaDesde) params = params.set('FechaDesde', filtro.fechaDesde);
     if (filtro.fechaHasta) params = params.set('FechaHasta', filtro.fechaHasta);
 
-    return this.http.get<Evento[]>(this.baseUrl, { params });
+    return this.http.get<Evento[]>(`${this.group}/listarEventos`, { params });
   }
 
   crear(request: CrearEventoRequest): Observable<Evento> {
-    return this.http.post<Evento>(this.baseUrl, request);
+    return this.http.post<Evento>(`${this.group}/crearEvento`, request);
   }
 
   obtenerReporteOcupacion(eventoId: string): Observable<ReporteOcupacionEvento> {
-    return this.http.get<ReporteOcupacionEvento>(`${this.baseUrl}/${eventoId}/reporte-ocupacion`);
+    return this.http.get<ReporteOcupacionEvento>(`${this.group}/reporte-ocupacion/${eventoId}`);
   }
 }

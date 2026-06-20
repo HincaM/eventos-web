@@ -1,0 +1,18 @@
+<h1 class="h3 mb-4">Reportes de ocupación</h1>
+
+<div class="row mb-4">
+  <div class="col-md-4">
+    <label class="form-label" for="filtroEvento">Evento</label>
+    <ui-select id="filtroEvento" [items]="eventos()" [codigoFn]="eventoCodigo" [descripcionFn]="eventoDescripcion" placeholder="Selecciona un evento" [formField]="form.eventoId" />
+  </div>
+</div>
+
+@if (form.eventoId().value()) {
+  @if (reporte(); as reporte) {
+    <reporte-ocupacion-card [reporte]="reporte" />
+  } @else {
+    <ui-spinner />
+  }
+} @else {
+  <p class="text-muted">Selecciona un evento para ver su reporte de ocupación.</p>
+}
