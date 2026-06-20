@@ -9,32 +9,7 @@ import { ObtenerReporteOcupacionUseCase } from '../../core/application/use-cases
 @Component({
   selector: 'evento-reporte-page',
   imports: [AsyncPipe, CurrencyPipe, UiBadge, UiSpinner],
-  template: `
-    <h1 class="h3 mb-4">Reporte de ocupación</h1>
-
-    @if (reporte$ | async; as reporte) {
-      <div class="card">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center mb-3">
-            <h2 class="h5 mb-0">Estado</h2>
-            <ui-badge [estado]="reporte.estado" />
-          </div>
-          <dl class="row mb-0">
-            <dt class="col-sm-5">Entradas vendidas</dt>
-            <dd class="col-sm-7">{{ reporte.entradasVendidas }}</dd>
-            <dt class="col-sm-5">Entradas disponibles</dt>
-            <dd class="col-sm-7">{{ reporte.entradasDisponibles }}</dd>
-            <dt class="col-sm-5">Porcentaje de ocupación</dt>
-            <dd class="col-sm-7">{{ reporte.porcentajeOcupacion }}%</dd>
-            <dt class="col-sm-5">Ingresos</dt>
-            <dd class="col-sm-7">{{ reporte.ingresos | currency }}</dd>
-          </dl>
-        </div>
-      </div>
-    } @else {
-      <ui-spinner />
-    }
-  `,
+  templateUrl: './evento-reporte.page.html',
 })
 export class EventoReportePage {
   private readonly obtenerReporteOcupacionUseCase = inject(ObtenerReporteOcupacionUseCase);

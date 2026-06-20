@@ -1,3 +1,31 @@
+// Include theming for Angular Material with `mat.theme()`.
+// This Sass mixin will define CSS variables that are used for styling Angular Material
+// components according to the Material 3 design spec.
+// Learn more about theming and how to use it for your application's
+// custom components at https://material.angular.dev/guide/theming
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+body {
+  // El layout general (fondo, tipografia, colores) lo controla Bootstrap;
+  // las variables de mat.theme() solo se usan dentro de los componentes Material (datepicker, etc).
+  color-scheme: light;
+  margin: 0;
+  height: 100%;
+}
 @import 'bootstrap/dist/css/bootstrap.min.css';
 @import '@fortawesome/fontawesome-free/css/all.min.css';
 
@@ -6,4 +34,3 @@ body {
   height: 100%;
   margin: 0;
 }
-

@@ -1,0 +1,26 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">Eventos</h1>
+  @if (authService.isAuthenticated()) {
+    <a class="btn btn-primary" routerLink="/eventos/crear"><i class="fa-solid fa-plus me-1"></i>Crear evento</a>
+  }
+</div>
+
+<div class="mb-4">
+  <evento-filtro-form (filtroCambiado)="filtro$.next($event)" />
+</div>
+
+@if (eventos$ | async; as eventos) {
+  @if (eventos.length === 0) {
+    <p class="text-muted">No se encontraron eventos con los filtros seleccionados.</p>
+  } @else {
+    <div class="row g-3">
+      @for (evento of eventos; track evento.id) {
+        <div class="col-md-4">
+          <evento-card [evento]="evento" />
+        </div>
+      }
+    </div>
+  }
+} @else {
+  <ui-spinner />
+}

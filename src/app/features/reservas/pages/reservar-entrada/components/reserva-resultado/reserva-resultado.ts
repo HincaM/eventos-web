@@ -1,5 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, input, output, signal } from '@angular/core';
+import { Component, inject, input, output, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../../../../../../core/auth/auth.service';
 import { EstadoReserva } from '../../../../../../core/enums/estado-reserva.enum';
 import { UiBadge } from '../../../../../../shared/components/badge/badge';
 import { UiButton } from '../../../../../../shared/components/button/button';
@@ -8,7 +10,7 @@ import { Reserva } from '../../../../core/domain/models/reserva.model';
 
 @Component({
   selector: 'reserva-resultado',
-  imports: [DatePipe, UiBadge, UiButton, UiModal],
+  imports: [DatePipe, RouterLink, UiBadge, UiButton, UiModal],
   template: `
     <div class="card">
       <div class="card-body">
@@ -26,11 +28,20 @@ import { Reserva } from '../../../../core/domain/models/reserva.model';
         </dl>
 
         @if (reserva().estado === estadoReserva.PendientePago) {
-          <div class="d-flex gap-2">
-            <ui-button (click)="confirmarPago.emit()" [loading]="confirmando()">Confirmar pago</ui-button>
+          <div class="d-flex gap-2 align-items-center mb-3">
+            @if (authService.isAuthenticated()) {
+              <ui-button (click)="confirmarPago.emit()" [loading]="confirmando()">Confirmar pago</ui-button>
+            } @else {
+              <p class="text-muted mb-0 small">El pago será confirmado por un administrador.</p>
+            }
             <ui-button variant="outline-secondary" (click)="modalCancelarAbierto.set(true)">Cancelar reserva</ui-button>
           </div>
         }
+
+        <div class="d-flex gap-2 border-top pt-3">
+          <ui-button variant="outline-secondary" (click)="nuevaReserva.emit()">Hacer otra reserva</ui-button>
+          <a class="btn btn-outline-secondary" routerLink="/eventos">Ir a eventos</a>
+        </div>
       </div>
     </div>
 
@@ -46,6 +57,7 @@ import { Reserva } from '../../../../core/domain/models/reserva.model';
   `,
 })
 export class ReservaResultado {
+  protected readonly authService = inject(AuthService);
   protected readonly estadoReserva = EstadoReserva;
   protected readonly modalCancelarAbierto = signal(false);
 
@@ -54,6 +66,7 @@ export class ReservaResultado {
 
   readonly confirmarPago = output<void>();
   readonly cancelar = output<void>();
+  readonly nuevaReserva = output<void>();
 
   protected onConfirmarCancelacion(): void {
     this.modalCancelarAbierto.set(false);

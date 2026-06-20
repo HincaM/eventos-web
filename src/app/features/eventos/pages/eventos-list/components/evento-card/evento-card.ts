@@ -1,6 +1,7 @@
-import { Component, input } from '@angular/core';
+import { Component, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
+import { AuthService } from '../../../../../../core/auth/auth.service';
 import { Evento } from '../../../../core/domain/models/evento.model';
 import { UiBadge } from '../../../../../../shared/components/badge/badge';
 
@@ -27,9 +28,11 @@ import { UiBadge } from '../../../../../../shared/components/badge/badge';
           <span class="ms-3"><i class="fa-solid fa-users me-1"></i>{{ evento().capacidadMaxima }}</span>
         </p>
         <div class="d-flex gap-2">
-          <a class="btn btn-outline-secondary btn-sm" [routerLink]="['/eventos', evento().id, 'reporte-ocupacion']">
-            <i class="fa-solid fa-chart-pie me-1"></i>Reporte
-          </a>
+          @if (authService.isAuthenticated()) {
+            <a class="btn btn-outline-secondary btn-sm" [routerLink]="['/eventos', evento().id, 'reporte-ocupacion']">
+              <i class="fa-solid fa-chart-pie me-1"></i>Reporte
+            </a>
+          }
           <a class="btn btn-primary btn-sm" [routerLink]="['/reservas', 'reservar']" [queryParams]="{ eventoId: evento().id }">
             <i class="fa-solid fa-ticket me-1"></i>Reservar
           </a>
@@ -39,5 +42,7 @@ import { UiBadge } from '../../../../../../shared/components/badge/badge';
   `,
 })
 export class EventoCard {
+  protected readonly authService = inject(AuthService);
+
   readonly evento = input.required<Evento>();
 }

@@ -1,5 +1,6 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, computed, inject, input, signal } from '@angular/core';
 import { NotificationService } from '../../../../core/services/notification.service';
+import { EventoSelector } from './components/evento-selector/evento-selector';
 import { ReservaForm } from './components/reserva-form/reserva-form';
 import { ReservaResultado } from './components/reserva-resultado/reserva-resultado';
 import { Reserva } from '../../core/domain/models/reserva.model';
@@ -10,21 +11,8 @@ import { CancelarReservaUseCase } from '../../core/application/use-cases/cancela
 
 @Component({
   selector: 'reservar-entrada-page',
-  imports: [ReservaForm, ReservaResultado],
-  template: `
-    <h1 class="h3 mb-4">Reservar entrada</h1>
-
-    @if (reserva(); as actualReserva) {
-      <reserva-resultado
-        [reserva]="actualReserva"
-        [confirmando]="confirmando()"
-        (confirmarPago)="onConfirmarPago(actualReserva.id)"
-        (cancelar)="onCancelar(actualReserva.id)"
-      />
-    } @else {
-      <reserva-form [eventoId]="eventoId()" [reservando]="reservando()" (reservar)="onReservar($event)" />
-    }
-  `,
+  imports: [EventoSelector, ReservaForm, ReservaResultado],
+  templateUrl: './reservar-entrada.page.html',
 })
 export class ReservarEntradaPage {
   private readonly reservarEntradaUseCase = inject(ReservarEntradaUseCase);
@@ -32,7 +20,13 @@ export class ReservarEntradaPage {
   private readonly cancelarReservaUseCase = inject(CancelarReservaUseCase);
   private readonly notificationService = inject(NotificationService);
 
-  readonly eventoId = input.required<string>();
+  readonly eventoId = input<string>('');
+
+  protected readonly eventoSeleccionadoManualmente = signal<string | null>(null);
+  protected readonly forzarSelector = signal(false);
+  protected readonly eventoIdEfectivo = computed(() =>
+    this.forzarSelector() ? null : this.eventoSeleccionadoManualmente() ?? (this.eventoId() || null),
+  );
 
   protected readonly reserva = signal<Reserva | null>(null);
   protected readonly reservando = signal(false);
@@ -69,5 +63,11 @@ export class ReservarEntradaPage {
         this.notificationService.show('Reserva cancelada.', 'info');
       },
     });
+  }
+
+  protected onNuevaReserva(): void {
+    this.reserva.set(null);
+    this.eventoSeleccionadoManualmente.set(null);
+    this.forzarSelector.set(true);
   }
 }

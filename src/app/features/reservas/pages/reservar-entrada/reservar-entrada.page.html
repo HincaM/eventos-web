@@ -1,0 +1,15 @@
+<h1 class="h3 mb-4">Reservar entrada</h1>
+
+@if (!eventoIdEfectivo()) {
+  <evento-selector (eventoSeleccionado)="eventoSeleccionadoManualmente.set($event)" />
+} @else if (reserva(); as actualReserva) {
+  <reserva-resultado
+    [reserva]="actualReserva"
+    [confirmando]="confirmando()"
+    (confirmarPago)="onConfirmarPago(actualReserva.id)"
+    (cancelar)="onCancelar(actualReserva.id)"
+    (nuevaReserva)="onNuevaReserva()"
+  />
+} @else {
+  <reserva-form [eventoId]="eventoIdEfectivo()!" [reservando]="reservando()" (reservar)="onReservar($event)" />
+}

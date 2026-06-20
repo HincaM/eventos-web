@@ -1,0 +1,66 @@
+<h1 class="h3 mb-4">Crear evento</h1>
+
+<form (submit)="onSubmit($event)" novalidate>
+  <div class="mb-3">
+    <label class="form-label" for="titulo">Título</label>
+    <input id="titulo" type="text" class="form-control" [formField]="form.titulo" />
+    <ui-form-error [errors]="form.titulo().errors()" [touched]="form.titulo().touched()" />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label" for="descripcion">Descripción</label>
+    <textarea id="descripcion" class="form-control" rows="3" [formField]="form.descripcion"></textarea>
+    <ui-form-error [errors]="form.descripcion().errors()" [touched]="form.descripcion().touched()" />
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label" for="venueId">Venue</label>
+      <select id="venueId" class="form-select" [formField]="form.venueId">
+        <option value="0">Selecciona un venue</option>
+        @for (venue of venues(); track venue.id) {
+          <option [value]="venue.id.toString()">{{ venue.nombre }}</option>
+        }
+      </select>
+      <ui-form-error [errors]="form.venueId().errors()" [touched]="form.venueId().touched()" />
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label" for="capacidadMaxima">Capacidad máxima</label>
+      <input id="capacidadMaxima" type="number" class="form-control" [formField]="form.capacidadMaxima" />
+      <ui-form-error [errors]="form.capacidadMaxima().errors()" [touched]="form.capacidadMaxima().touched()" />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label" for="fechaInicio">Fecha de inicio</label>
+      <input id="fechaInicio" type="datetime-local" class="form-control" [formField]="form.fechaInicio" />
+      <ui-form-error [errors]="form.fechaInicio().errors()" [touched]="form.fechaInicio().touched()" />
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label" for="fechaFin">Fecha de fin</label>
+      <input id="fechaFin" type="datetime-local" class="form-control" [formField]="form.fechaFin" />
+      <ui-form-error [errors]="form.fechaFin().errors()" [touched]="form.fechaFin().touched()" />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label class="form-label" for="precio">Precio</label>
+      <input id="precio" type="number" step="0.01" class="form-control" [formField]="form.precio" />
+      <ui-form-error [errors]="form.precio().errors()" [touched]="form.precio().touched()" />
+    </div>
+    <div class="col-md-6 mb-3">
+      <label class="form-label" for="tipo">Tipo</label>
+      <select id="tipo" class="form-select" [formField]="form.tipo">
+        <option value="">Selecciona un tipo</option>
+        @for (tipo of tiposEvento; track tipo) {
+          <option [value]="tipo">{{ tipo }}</option>
+        }
+      </select>
+      <ui-form-error [errors]="form.tipo().errors()" [touched]="form.tipo().touched()" />
+    </div>
+  </div>
+
+  <ui-button type="submit" [loading]="creating()">Crear evento</ui-button>
+</form>

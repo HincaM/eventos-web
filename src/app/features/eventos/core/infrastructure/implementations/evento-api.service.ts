@@ -18,6 +18,7 @@ export class EventoApiService extends EventoService {
     if (filtro.titulo) params = params.set('Titulo', filtro.titulo);
     if (filtro.venueId) params = params.set('VenueId', filtro.venueId);
     if (filtro.fechaDesde) params = params.set('FechaDesde', filtro.fechaDesde);
+    if (filtro.fechaHasta) params = params.set('FechaHasta', filtro.fechaHasta);
 
     return this.http.get<Evento[]>(this.baseUrl, { params });
   }
