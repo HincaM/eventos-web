@@ -1,7 +1,19 @@
 <h1 class="h3 mb-4">Reservar entrada</h1>
 
 @if (!eventoIdEfectivo()) {
-  <evento-selector (eventoSeleccionado)="eventoSeleccionadoManualmente.set($event)" />
+  <div class="card">
+    <div class="card-body">
+      <h2 class="h5 mb-3">Selecciona un evento para reservar</h2>
+      <ui-selector
+        [items]="eventosActivos()"
+        [labelFn]="eventoLabel"
+        [valueFn]="eventoValue"
+        placeholder="Selecciona un evento"
+        vacioMensaje="No hay eventos activos disponibles."
+        (seleccionado)="eventoSeleccionadoManualmente.set($event)"
+      />
+    </div>
+  </div>
 } @else if (reserva(); as actualReserva) {
   <reserva-resultado
     [reserva]="actualReserva"
@@ -11,5 +23,25 @@
     (nuevaReserva)="onNuevaReserva()"
   />
 } @else {
-  <reserva-form [eventoId]="eventoIdEfectivo()!" [reservando]="reservando()" (reservar)="onReservar($event)" />
+  <form (submit)="onSubmitReserva($event)" novalidate>
+    <div class="mb-3">
+      <label class="form-label" for="cantidad">Cantidad de entradas</label>
+      <input id="cantidad" type="number" class="form-control" [formField]="form.cantidad" />
+      <ui-form-error [errors]="form.cantidad().errors()" [touched]="form.cantidad().touched()" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="nombreComprador">Nombre del comprador</label>
+      <input id="nombreComprador" type="text" class="form-control" [formField]="form.nombreComprador" />
+      <ui-form-error [errors]="form.nombreComprador().errors()" [touched]="form.nombreComprador().touched()" />
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label" for="emailComprador">Email del comprador</label>
+      <input id="emailComprador" type="email" class="form-control" [formField]="form.emailComprador" />
+      <ui-form-error [errors]="form.emailComprador().errors()" [touched]="form.emailComprador().touched()" />
+    </div>
+
+    <ui-button type="submit" [loading]="reservando()">Reservar entrada</ui-button>
+  </form>
 }

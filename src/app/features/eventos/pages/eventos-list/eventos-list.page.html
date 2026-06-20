@@ -5,11 +5,47 @@
   }
 </div>
 
-<div class="mb-4">
-  <evento-filtro-form (filtroCambiado)="filtro$.next($event)" />
-</div>
+<form class="row g-2 align-items-end mb-4" (submit)="onFiltrar($event)" novalidate>
+  <div class="col-md-2">
+    <label class="form-label" for="filtroTitulo">Título</label>
+    <input id="filtroTitulo" type="text" class="form-control" [formField]="form.titulo" />
+  </div>
+  <div class="col-md-2">
+    <label class="form-label" for="filtroTipo">Tipo</label>
+    <select id="filtroTipo" class="form-select" [formField]="form.tipo">
+      <option value="">Todos</option>
+      @for (tipo of tiposEvento; track tipo) {
+        <option [value]="tipo">{{ tipo }}</option>
+      }
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label" for="filtroEstado">Estado</label>
+    <select id="filtroEstado" class="form-select" [formField]="form.estado">
+      <option value="">Todos</option>
+      @for (estado of estadosEvento; track estado) {
+        <option [value]="estado">{{ estado }}</option>
+      }
+    </select>
+  </div>
+  <div class="col-md-2">
+    <label class="form-label" for="filtroVenue">Venue</label>
+    <select id="filtroVenue" class="form-select" [formField]="form.venueId">
+      <option value="">Todos</option>
+      @for (venue of venues(); track venue.id) {
+        <option [value]="venue.id.toString()">{{ venue.nombre }}</option>
+      }
+    </select>
+  </div>
+  <div class="col-md-3">
+    <ui-date-range-picker label="Rango de inicio" (rangoCambiado)="onRangoFechas($event)" />
+  </div>
+  <div class="col-md-1">
+    <ui-button type="submit">Filtrar</ui-button>
+  </div>
+</form>
 
-@if (eventos$ | async; as eventos) {
+@if (eventos(); as eventos) {
   @if (eventos.length === 0) {
     <p class="text-muted">No se encontraron eventos con los filtros seleccionados.</p>
   } @else {
