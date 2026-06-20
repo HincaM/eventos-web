@@ -1,0 +1,23 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" routerLink="/eventos"><i class="fa-solid fa-calendar-days me-2"></i>Eventos</a>
+    <div class="navbar-nav">
+      <a class="nav-link" routerLink="/eventos" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+        Eventos
+      </a>
+      <a class="nav-link" routerLink="/reservas/reservar" routerLinkActive="active">Reservar entrada</a>
+    </div>
+  </div>
+</nav>
+
+@if (loadingService.isLoading()) {
+  <div class="progress" style="height: 3px; border-radius: 0;">
+    <div class="progress-bar progress-bar-striped progress-bar-animated bg-primary" style="width: 100%"></div>
+  </div>
+}
+
+<main class="container py-4">
+  <router-outlet />
+</main>
+
+<ui-notification-toast />
