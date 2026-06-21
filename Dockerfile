@@ -2,9 +2,12 @@
 
 FROM node:22-alpine AS build
 WORKDIR /app
+ARG API_URL=http://localhost:8080
+ARG INTERNAL_API_URL=http://localhost:8080
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY . .
+RUN echo "export const environment = { production: true, apiUrl: '${API_URL}', internalApiUrl: '${INTERNAL_API_URL}' };" > src/environments/environment.prod.ts
 RUN npm run build
 RUN npm prune --omit=dev
 

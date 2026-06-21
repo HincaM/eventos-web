@@ -1,59 +1,56 @@
-# EventosWeb
+# Eventos Web
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.0.
+Aplicación web para consultar administrar eventos y administrar reservas.
 
-## Development server
+## Cómo ejecutar el proyecto en local
 
-To start a local development server, run:
+### Requisitos previos
 
-```bash
-ng serve
+- Node.js (versión 20 o superior)
+- La API de Eventos corriendo (ver el README de `eventos-api`)
+
+### Pasos
+
+1. Clonar el repositorio y abrir una terminal en la carpeta raíz del proyecto.
+2. Instalar las dependencias:
+   ```
+   npm install
+   ```
+3. Levantar la aplicación en modo desarrollo:
+   ```
+   ng serve
+   ```
+4. Abrir el navegador en `http://localhost:4200`.
+
+La aplicación espera que la API esté disponible (por defecto en `http://localhost:5267`).
+
+### Correr las pruebas
+
 ```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
-
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
 ng test
 ```
 
-## Running end-to-end tests
+## Arquitectura
 
-For end-to-end (e2e) testing, run:
+El proyecto también sigue una idea de **puertos y adaptadores** en conjunto con estructura de carpetas core-features-shared. 
+El objetivo es que las pantallas (componentes) no tengan lógica de negocio dentro, solo se encargan de mostrar datos y capturar acciones del usuario.
 
-```bash
-ng e2e
-```
+Cada funcionalidad (eventos, reservas, venues) se organiza en carpetas `core` que contienen la arquitectura hexagonal:
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+- **domain**: 
+Contiene los modelos y contratos (puertos).
+- **application / use-cases**: 
+Contiene los casos de uso y la lógica asociada a cada operación de negocio
+- **infrastructure / implementations**: 
+contiene las implementaciones de los contratos (adaptadores), encargadas de comunicarse con la API mediante HTTP.
 
-## Additional Resources
+Las páginas (pantallas) inyectan y llaman a los casos de uso, nunca hablan directamente con la API ni contienen reglas de negocio. Esto facilita probar la lógica de negocio sola, y permite cambiar cómo se obtienen los datos sin tocar las pantallas.
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Tecnologías utilizadas
+
+- **Angular** — framework principal del frontend.
+- **TypeScript** — lenguaje de desarrollo.
+- **RxJS** — manejo de datos asíncronos (peticiones, eventos del usuario).
+- **Angular Material / Bootstrap** — componentes visuales y estilos.
+- **Server-Side Rendering (Angular SSR)** — renderizado en servidor para mejorar la carga inicial.
+- **Vitest** — pruebas unitarias.
